@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div id="map" style="height: 700px;"></div>
+
+<script>
+    $(document).ready(function () {
+
+        let map = L.map('map').setView([40, -5], 5.6);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        $.ajax({
+            url: 'data.php',
+            dataType: 'json',
+            success: function (data) {
+                data.forEach(function (element) {
+                    L.marker([parseFloat(element.lat), parseFloat(element.long)])
+                        .addTo(map).bindPopup(`<strong>${element.location}</strong> (${element.magnitude})<br>${element.date} - ${element.time}`);
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("Error - " + error);
+            }
+        });
+    });
+</script>
+</body>
+</html>
